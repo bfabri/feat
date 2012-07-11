@@ -13,6 +13,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Feature {
-	String getName();
-	String getDescription();
+	String name();
+	String description();
 }
