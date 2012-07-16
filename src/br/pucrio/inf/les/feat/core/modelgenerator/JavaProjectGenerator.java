@@ -14,23 +14,25 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
-import br.pucrio.inf.les.feat.core.Feature;
+import br.pucrio.inf.les.feat.core.model.Project;
 
 /**
  * 
  * @author Bruno Fábri
  *
  */
-public class JavaModelGenerator implements IModelGenerator {
+public class JavaProjectGenerator implements IProjectGenerator {
 	
-	private Map<ASTNode, List<Feature>> annotatedNodes;
+	private Project javaProject;
+	private Map<ASTNode, List<Annotation>> annotatedNodes;
 	
 	@Override
-	public void generateModel(IProject project) {
-		initializeNodes();
-		
+	public Project generateProject(IProject project) throws ProjectGeneratorException {
+		javaProject = null;
+		annotatedNodes = new HashMap<ASTNode, List<Annotation>>();
 		try {
 			IJavaProject javaProject = JavaCore.create(project);
 			IPackageFragment[] packages = javaProject.getPackageFragments();
@@ -40,13 +42,20 @@ public class JavaModelGenerator implements IModelGenerator {
 					for (ICompilationUnit compilationUnit : javaPackage.getCompilationUnits()) {
 						CompilationUnit compilationUnitParsered = parse(compilationUnit);
 						compilationUnitParsered.accept(new AnnotatedNodeVisitor(annotatedNodes));
+						for (Map.Entry<ASTNode, List<Annotation>> list : annotatedNodes.entrySet()) {
+							System.out.println(list.getKey());
+							for (Annotation a : list.getValue()) {
+								System.out.println("Feature: " + a);
+							}
+						}
 					}
 				}
 			}
 			
 		} catch (JavaModelException e) {
-			e.printStackTrace();
+			throw new ProjectGeneratorException("", e);
 		}
+		return javaProject;
 	}
 	
 	private CompilationUnit parse(ICompilationUnit compilationUnit) {
@@ -59,9 +68,5 @@ public class JavaModelGenerator implements IModelGenerator {
 	
 	private boolean isSourcePackage(IPackageFragment aPackage) throws JavaModelException {
 		return aPackage.getKind() == IPackageFragmentRoot.K_SOURCE;
-	}
-	
-	private void initializeNodes() {
-		annotatedNodes = new HashMap<>();
 	}
 }

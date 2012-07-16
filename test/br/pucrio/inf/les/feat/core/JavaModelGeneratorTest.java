@@ -15,7 +15,8 @@ import org.eclipse.jdt.launching.JavaRuntime;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.pucrio.inf.les.feat.core.modelgenerator.JavaModelGenerator;
+import br.pucrio.inf.les.feat.core.modelgenerator.JavaProjectGenerator;
+import br.pucrio.inf.les.feat.core.modelgenerator.ProjectGeneratorException;
 
 
 public class JavaModelGeneratorTest {
@@ -63,9 +64,9 @@ public class JavaModelGeneratorTest {
 	}
 	
 	@Test
-	public void testGenerateJavaModel() {
-		JavaModelGenerator generator = new JavaModelGenerator();
-		generator.generateModel(javaProject);
+	public void testGenerateJavaModel() throws ProjectGeneratorException {
+		JavaProjectGenerator generator = new JavaProjectGenerator();
+		generator.generateProject(javaProject);
 	}
 	
 	

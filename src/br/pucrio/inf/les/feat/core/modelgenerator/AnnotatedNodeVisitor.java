@@ -13,6 +13,7 @@ import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import br.pucrio.inf.les.feat.core.Feature;
@@ -25,13 +26,13 @@ import br.pucrio.inf.les.feat.core.Feature;
  */
 public class AnnotatedNodeVisitor extends ASTVisitor {
 
-	private final Map<ASTNode, List<Feature>> annotatedNodes;
+	private final Map<ASTNode, List<Annotation>> annotatedNodes;
 	
 	/**
 	 * 
 	 * @param annotatedNodes
 	 */
-	public AnnotatedNodeVisitor(final Map<ASTNode, List<Feature>> annotatedNodes) {
+	public AnnotatedNodeVisitor(final Map<ASTNode, List<Annotation>> annotatedNodes) {
 		this.annotatedNodes = annotatedNodes;
 	}
 	
@@ -41,7 +42,7 @@ public class AnnotatedNodeVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(TypeDeclaration node) {
 		visitBodyDeclaration(node);
-		return false;
+		return true;
 	}
 	
 	/**
@@ -68,7 +69,7 @@ public class AnnotatedNodeVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(EnumDeclaration node) {
 		visitBodyDeclaration(node);
-		return false;
+		return true;
 	}
 	
 	/**
@@ -86,15 +87,16 @@ public class AnnotatedNodeVisitor extends ASTVisitor {
 	 */
 	private void visitBodyDeclaration(final BodyDeclaration node)
     {
-		List<Feature> features = new ArrayList<>();
+		List<Annotation> features = new ArrayList<Annotation>();
 		List<?> modifiers = node.modifiers();
 		for (Object modifier : modifiers) {
 			if (modifier instanceof IExtendedModifier) {
 				IExtendedModifier extModifier = (IExtendedModifier) modifier;
 				if (extModifier.isAnnotation()) {
 					Annotation annotation = (Annotation) extModifier;
-					if (annotation instanceof Feature) {
-						features.add((Feature)annotation);
+					SimpleName name = (SimpleName) annotation.getTypeName();
+					if (name.getIdentifier().equals("Feature")) {
+						
 					}
 				}
 			}
