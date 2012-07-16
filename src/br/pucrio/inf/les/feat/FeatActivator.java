@@ -16,14 +16,14 @@ public class FeatActivator extends AbstractUIPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		FeatManager.getManager().loadProjects();
 		plugin = this;
+		FeatManager.getManager().loadProjects();
 	}
 	
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		plugin = null;
 		FeatManager.getManager().saveProjects();
+		plugin = null;
 		super.stop(context);
 	}
 	

@@ -6,10 +6,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import br.pucrio.inf.les.feat.FeatActivator;
+import br.pucrio.inf.les.feat.FeatLog;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -58,6 +58,9 @@ public class FeatManager {
 		fireFeatChanged(new Project[]{}, projectsRemoved);
 	}
 	
+	/**
+	 * 
+	 */
 	@SuppressWarnings("unchecked")
 	public void loadProjects() {
 		projects = new ArrayList<Project>();
@@ -67,29 +70,16 @@ public class FeatManager {
 			XStream xstream = new XStream();
 			projects = (List<Project>) xstream.fromXML(reader);
 		} catch (FileNotFoundException e) {
-
+			FeatLog.logInfo("Arquivo não existe");
 		} catch (Exception e) {
-			
+			FeatLog.logError("Problema no carregamento dos projetos", e);
 		} finally {
 			try {
 				if (reader != null) {
 					reader.close();
 				}
 			} catch (IOException e) {
-				
-			}
-		}
-		
-		for (int i = 0; i < 5; i++) {
-			Project p = new Project("Project " + i);
-			projects.add(p);
-			for (int j = 0; j < 3; j++) {
-				Version v = new Version(p, "Version " + j, new Date());
-				p.addVersion(v);
-				for (int k = 0; k < 3; k++) {
-					Feature f = new Feature(v, "Feature " + k, "Description " + k);
-					v.addFeature(f);
-				}				
+				FeatLog.logError("Problema ao fechar o arquivo de carregamento dos projetos", e);
 			}
 		}
 	}
