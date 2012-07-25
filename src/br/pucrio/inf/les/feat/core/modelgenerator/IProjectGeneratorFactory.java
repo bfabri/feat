@@ -9,18 +9,18 @@ import org.eclipse.jdt.core.JavaCore;
 
 public class IProjectGeneratorFactory {
 
-	private static final Map<String, IProjectGenerator> GENERATORS = new HashMap<String, IProjectGenerator>() {
+	private static final Map<String, IProjectGeneratorStrategy> GENERATORS = new HashMap<String, IProjectGeneratorStrategy>() {
 		private static final long serialVersionUID = 1L;
 
 		{
-			put(JavaCore.NATURE_ID, new JavaProjectGenerator());
+			put(JavaCore.NATURE_ID, new JavaProjectGeneratorStrategy());
 		}
 
 	};
 
-	public static IProjectGenerator createProjectGeneratorFor(IProject project) throws ProjectGeneratorException {
+	public static IProjectGeneratorStrategy createProjectGeneratorFor(IProject project) throws ProjectGeneratorException {
 		try {
-			for (Map.Entry<String, IProjectGenerator> generator : GENERATORS
+			for (Map.Entry<String, IProjectGeneratorStrategy> generator : GENERATORS
 					.entrySet()) {
 				if (project.hasNature(generator.getKey())) {
 					return generator.getValue();

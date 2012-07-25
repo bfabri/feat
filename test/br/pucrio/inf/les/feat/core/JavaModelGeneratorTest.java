@@ -15,7 +15,7 @@ import org.eclipse.jdt.launching.JavaRuntime;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.pucrio.inf.les.feat.core.modelgenerator.JavaProjectGenerator;
+import br.pucrio.inf.les.feat.core.modelgenerator.JavaProjectGeneratorStrategy;
 import br.pucrio.inf.les.feat.core.modelgenerator.ProjectGeneratorException;
 
 
@@ -57,7 +57,7 @@ public class JavaModelGeneratorTest {
 		//create package fragment
 		IPackageFragment fragment = srcFolder.createPackageFragment(
 				"br.pucrio.inf.les.test", true, null);
- 
+		
 		//init code string and create compilation unit
 		fragment.createCompilationUnit("Calculator.java", createJavaFile(), false, null);
 		this.javaProject = javaProject.getProject();
@@ -65,8 +65,8 @@ public class JavaModelGeneratorTest {
 	
 	@Test
 	public void testGenerateJavaModel() throws ProjectGeneratorException {
-		JavaProjectGenerator generator = new JavaProjectGenerator();
-		generator.generateProject(javaProject);
+		JavaProjectGeneratorStrategy generator = new JavaProjectGeneratorStrategy();
+		generator.generate(javaProject, "0.0.1");
 	}
 	
 	

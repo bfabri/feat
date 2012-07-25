@@ -5,7 +5,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
-import br.pucrio.inf.les.feat.core.model.FeatManager;
+import br.pucrio.inf.les.feate.core.repository.ProjectRepository;
 
 public class ProjectsView extends ViewPart {
 
@@ -21,7 +21,7 @@ public class ProjectsView extends ViewPart {
 		viewer = new TreeViewer(parent, SWT.MULTI);
 		viewer.setContentProvider(new ProjectsViewContentProvider());
 		viewer.setLabelProvider(new ProjectsViewLabelProvider());
-		viewer.setInput(FeatManager.getManager());
+		viewer.setInput(ProjectRepository.getProjectRepository());
 	}
 
 	@Override

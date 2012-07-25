@@ -1,4 +1,7 @@
-package br.pucrio.inf.les.feat.core.model;
+package br.pucrio.inf.les.feat.core.domainmodel;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * <p>
@@ -14,10 +17,13 @@ public class Feature {
 	
 	private final Version version;
 	
+	private Set<Element> elements;
+	
 	public Feature(Version version, String name, String description) {
 		this.version = version;
 		this.name = name;
 		this.description = description;
+		this.elements = new HashSet<Element>();
 	}
 	
 	public String getName() {
@@ -30,6 +36,18 @@ public class Feature {
 
 	public Version getVersion() {
 		return this.version;
+	}
+	
+	public Element[] getElements() {
+		return this.elements.toArray(new Element[this.elements.size()]);
+	}
+	
+	public boolean addElement(Element element) {
+		return this.elements.add(element);
+	}
+	
+	public boolean removeElement(Element element) {
+		return this.elements.remove(element);
 	}
 	
 	@Override

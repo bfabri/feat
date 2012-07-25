@@ -2,9 +2,10 @@ package br.pucrio.inf.les.feat.ui.views;
 
 import org.eclipse.jface.viewers.LabelProvider;
 
-import br.pucrio.inf.les.feat.core.model.Feature;
-import br.pucrio.inf.les.feat.core.model.Project;
-import br.pucrio.inf.les.feat.core.model.Version;
+import br.pucrio.inf.les.feat.core.domainmodel.Element;
+import br.pucrio.inf.les.feat.core.domainmodel.Feature;
+import br.pucrio.inf.les.feat.core.domainmodel.Project;
+import br.pucrio.inf.les.feat.core.domainmodel.Version;
 
 public class ProjectsViewLabelProvider extends LabelProvider {
 
@@ -21,6 +22,10 @@ public class ProjectsViewLabelProvider extends LabelProvider {
 		else if (element instanceof Feature) {
 			Feature f = (Feature) element;
 			return f.getName() + " - " + f.getDescription();
+		}
+		else if (element instanceof Element) {
+			Element e = (Element) element;
+			return e.getType() + " - " + e.getName() + " - " + e.getStartLine() + " - " + e.getEndLine() + " - " + e.getLocation();
 		}
 		return "";
 	}

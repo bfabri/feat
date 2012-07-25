@@ -4,34 +4,34 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 
-import br.pucrio.inf.les.feat.core.model.FeatManager;
-import br.pucrio.inf.les.feat.core.model.FeatManagerEvent;
-import br.pucrio.inf.les.feat.core.model.FeatManagerListener;
-import br.pucrio.inf.les.feat.core.model.Feature;
-import br.pucrio.inf.les.feat.core.model.Project;
-import br.pucrio.inf.les.feat.core.model.Version;
+import br.pucrio.inf.les.feat.core.domainmodel.Feature;
+import br.pucrio.inf.les.feat.core.domainmodel.Project;
+import br.pucrio.inf.les.feat.core.domainmodel.Version;
+import br.pucrio.inf.les.feate.core.repository.ProjectChangeEvent;
+import br.pucrio.inf.les.feate.core.repository.ProjectChangeListener;
+import br.pucrio.inf.les.feate.core.repository.ProjectRepository;
 
 public class ProjectsViewContentProvider implements ITreeContentProvider,
-		FeatManagerListener {
+		ProjectChangeListener {
 
 	private TreeViewer viewer;
-	private FeatManager manager;
+	private ProjectRepository repository;
 	
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		this.viewer = (TreeViewer) viewer;
-		if (manager != null) {
-			manager.removeFeatManagerListener(this);
+		if (repository != null) {
+			repository.removerProjectChangeListener(this);
 		}
-		manager = (FeatManager) newInput;
-		if (manager != null) {
-			manager.addFeatManagerListener(this);
+		repository = (ProjectRepository) newInput;
+		if (repository != null) {
+			repository.addProjectChangeListener(this);
 		}
 	}
 
 	@Override
 	public Object[] getElements(Object inputElement) {
-		return manager.getProjects();
+		return repository.findAll();
 	}
 
 	@Override
@@ -42,6 +42,9 @@ public class ProjectsViewContentProvider implements ITreeContentProvider,
 		} else if (parentElement instanceof Version) {
 			Version version = (Version) parentElement;
 			return version.getFeatures();
+		} else if (parentElement instanceof Feature) {
+			Feature feature = (Feature) parentElement;
+			return feature.getElements();
 		}
 		return null;
 	}
@@ -69,6 +72,9 @@ public class ProjectsViewContentProvider implements ITreeContentProvider,
 		} else if (element instanceof Version) {
 			Version version = (Version) element;
 			return version.getFeatures().length > 0;
+		} else if (element instanceof Feature) {
+			Feature feature = (Feature) element;
+			return feature.getElements().length > 0;
 		}
 		return false;
 	}
@@ -80,7 +86,7 @@ public class ProjectsViewContentProvider implements ITreeContentProvider,
 	}
 
 	@Override
-	public void featChanged(FeatManagerEvent event) {
+	public void projectChanged(ProjectChangeEvent event) {
 		viewer.getTree().setRedraw(false);
 		try {
 			viewer.remove(event.getItemsRemoved());
@@ -88,6 +94,9 @@ public class ProjectsViewContentProvider implements ITreeContentProvider,
 				viewer.add(project, project.getVersions());
 				for (Version version : project.getVersions()) {
 					viewer.add(version, version.getFeatures());
+					for (Feature feature : version.getFeatures()) {
+						viewer.add(feature, feature.getElements());
+					}
 				}
 			}
 		} finally {

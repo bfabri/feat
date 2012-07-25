@@ -1,9 +1,10 @@
-package br.pucrio.inf.les.feat.core.model;
+package br.pucrio.inf.les.feat.core.domainmodel;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * <p>
@@ -18,13 +19,13 @@ public class Version {
 	private final Date date;
 	
 	private final Project project;
-	private List<Feature> features;
+	private Set<Feature> features;
 	
 	public Version(Project project, String version, Date date) {
 		this.project = project;
 		this.version = version;
 		this.date = date;
-		this.features = new ArrayList<Feature>();
+		this.features = new HashSet<Feature>();
 	}
 	
 	public String getVersion() {
@@ -36,25 +37,33 @@ public class Version {
 		return formatter.format(this.date);
 	}
 
+	public Calendar getDate() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(date.getTime());
+		return calendar;
+	}
+	
 	public Project getProject() {
 		return this.project;
 	}
 	
 	public Feature[] getFeatures() {
-		return features.toArray(new Feature[features.size()]);
+		return this.features.toArray(new Feature[this.features.size()]);
 	}
 	
-	public void addFeature(Feature feature) {
-		if (!features.contains(feature)) {
-			this.features.add(feature);
-		}
+	public boolean addFeature(Feature feature) {
+		return this.features.add(feature);
+	}
+	
+	public boolean removeFeature(Feature feature) {
+		return this.features.remove(feature);
 	}
 	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((version == null) ? 0 : version.hashCode());
+		result = prime * result + ((this.version == null) ? 0 : this.version.hashCode());
 		return result;
 	}
 
