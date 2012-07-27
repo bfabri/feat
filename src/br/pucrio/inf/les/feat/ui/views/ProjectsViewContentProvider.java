@@ -5,6 +5,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 
 import br.pucrio.inf.les.feat.core.domainmodel.Feature;
+import br.pucrio.inf.les.feat.core.domainmodel.ITreeNode;
 import br.pucrio.inf.les.feat.core.domainmodel.Project;
 import br.pucrio.inf.les.feat.core.domainmodel.Version;
 import br.pucrio.inf.les.feate.core.repository.ProjectChangeEvent;
@@ -36,53 +37,25 @@ public class ProjectsViewContentProvider implements ITreeContentProvider,
 
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		if (parentElement instanceof Project) {
-			Project project = (Project) parentElement;
-			return project.getVersions();
-		} else if (parentElement instanceof Version) {
-			Version version = (Version) parentElement;
-			return version.getFeatures();
-		} else if (parentElement instanceof Feature) {
-			Feature feature = (Feature) parentElement;
-			return feature.getElements();
-		}
-		return null;
+		ITreeNode node = (ITreeNode) parentElement;
+		return node.getChildrens();
 	}
 
 	@Override
 	public Object getParent(Object element) {
-		if (element instanceof Project) {
-			return element;
-		}
-		else if (element instanceof Version) {
-			Version v = (Version) element;
-			return v.getProject();
-		}
-		else {
-			Feature f = (Feature) element;
-			return f.getVersion();
-		}
+		ITreeNode node = (ITreeNode) element;
+		return node.getParent();
 	}
 
 	@Override
 	public boolean hasChildren(Object element) {
-		if (element instanceof Project) {
-			Project project = (Project) element;
-			return project.getVersions().length > 0;
-		} else if (element instanceof Version) {
-			Version version = (Version) element;
-			return version.getFeatures().length > 0;
-		} else if (element instanceof Feature) {
-			Feature feature = (Feature) element;
-			return feature.getElements().length > 0;
-		}
-		return false;
+		ITreeNode node = (ITreeNode) element;
+		return node.hasChildren();
 	}
 
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override

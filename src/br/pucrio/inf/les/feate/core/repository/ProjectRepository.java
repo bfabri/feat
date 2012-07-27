@@ -104,7 +104,7 @@ public class ProjectRepository {
 	public Project find(Project project) {
 		for (Project projectAux : projects) {
 			if (projectAux.equals(project)) {
-				return project;
+				return projectAux;
 			}
 		}
 		throw new IllegalArgumentException("Não existe nenhum projeto com esse nome!");

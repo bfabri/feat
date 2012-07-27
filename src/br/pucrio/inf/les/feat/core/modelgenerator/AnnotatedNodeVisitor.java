@@ -177,6 +177,7 @@ public class AnnotatedNodeVisitor extends ASTVisitor {
 	
 	private void updateFeatures(Set<Feature> features, Element element) {
 		for (Feature feature : features) {
+			element.setFeature(feature);
 			if (versionFeatures.containsKey(feature)) {
 				versionFeatures.get(feature).add(element);
 			}

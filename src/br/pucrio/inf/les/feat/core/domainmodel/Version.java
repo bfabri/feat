@@ -13,7 +13,7 @@ import java.util.Set;
  * @author Bruno Fábri
  * @version 1.0
  */
-public class Version {
+public class Version implements ITreeNode {
 
 	private final String version;
 	private final Date date;
@@ -57,6 +57,26 @@ public class Version {
 	
 	public boolean removeFeature(Feature feature) {
 		return this.features.remove(feature);
+	}
+	
+	@Override
+	public ITreeNode[] getChildrens() {
+		return this.getFeatures();
+	}
+	
+	@Override
+	public ITreeNode getParent() {
+		return this.project;
+	}
+	
+	@Override
+	public String getPrintName() {
+		return String.format("Version: %1$s - %2$s", this.version, this.getFormattedDate());
+	}
+	
+	@Override
+	public boolean hasChildren() {
+		return getFeatures().length > 0;
 	}
 	
 	@Override

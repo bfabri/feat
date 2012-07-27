@@ -11,7 +11,7 @@ import java.util.Set;
  * @author Bruno Fábri
  * @version 1.0
  */
-public class Project {
+public class Project implements ITreeNode {
 
 	private final String name;
 	private Set<Version> versions; 
@@ -50,6 +50,26 @@ public class Project {
 	
 	public boolean removeVersion(Version version) {
 		return this.versions.remove(version);
+	}
+	
+	@Override
+	public ITreeNode[] getChildrens() {
+		return this.getVersions();
+	}
+	
+	@Override
+	public ITreeNode getParent() {
+		return null;
+	}
+	
+	@Override
+	public String getPrintName() {
+		return String.format("Project: %1$s", this.name);
+	}
+	
+	@Override
+	public boolean hasChildren() {
+		return getVersions().length > 0;
 	}
 	
 	@Override

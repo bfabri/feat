@@ -1,12 +1,14 @@
 package br.pucrio.inf.les.feat.core.domainmodel;
 
-public class Element {
+public class Element implements ITreeNode {
 
 	private final String name;
 	private final int startLine;
 	private final int endLine;
 	private final String location;
 	private final ElementType type;
+	
+	private Feature feature;
 
 	public Element(String name, int startLine, int endLine, String location,
 			ElementType type) {
@@ -35,5 +37,29 @@ public class Element {
 
 	public String getType() {
 		return this.type.getDescription();
+	}
+	
+	public void setFeature(Feature feature) {
+		this.feature = feature;
+	}
+	
+	@Override
+	public ITreeNode[] getChildrens() {
+		return null;
+	}
+	
+	@Override
+	public ITreeNode getParent() {
+		return feature;
+	}
+	
+	@Override
+	public String getPrintName() {
+		return String.format("%1$s: %2$s", getType(), getName());
+	}
+	
+	@Override
+	public boolean hasChildren() {
+		return false;
 	}
 }

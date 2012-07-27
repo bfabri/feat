@@ -10,7 +10,7 @@ import java.util.Set;
  * @author Bruno Fábri
  * @version 1.0
  */
-public class Feature {
+public class Feature implements ITreeNode {
 	
 	private final String name;
 	private final String description;
@@ -48,6 +48,26 @@ public class Feature {
 	
 	public boolean removeElement(Element element) {
 		return this.elements.remove(element);
+	}
+	
+	@Override
+	public ITreeNode[] getChildrens() {
+		return getElements();
+	}
+	
+	@Override
+	public ITreeNode getParent() {
+		return this.version;
+	}
+	
+	@Override
+	public String getPrintName() {
+		return String.format("Feature: %1$s", this.name);
+	}
+	
+	@Override
+	public boolean hasChildren() {
+		return getElements().length > 0;
 	}
 	
 	@Override
