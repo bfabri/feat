@@ -20,8 +20,12 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import br.pucrio.inf.les.feat.core.domainmodel.Element;
-import br.pucrio.inf.les.feat.core.domainmodel.ElementType;
+import br.pucrio.inf.les.feat.core.domainmodel.FeatModifier;
+import br.pucrio.inf.les.feat.core.domainmodel.FeatType;
 import br.pucrio.inf.les.feat.core.domainmodel.Feature;
+import br.pucrio.inf.les.feat.core.domainmodel.Field;
+import br.pucrio.inf.les.feat.core.domainmodel.Method;
+import br.pucrio.inf.les.feat.core.domainmodel.Type;
 import br.pucrio.inf.les.feat.core.domainmodel.Version;
 
 
@@ -53,13 +57,9 @@ public class AnnotatedNodeVisitor extends ASTVisitor {
 		ITypeBinding binding = node.resolveBinding();
 		Set<Feature> features = findFeatures(binding.getAnnotations());
 		if (features.size() > 0) {
-			ElementType type = node.isInterface() ? ElementType.INTERFACE : ElementType.CLASS;
-			String name = binding.getQualifiedName();
 			int startLine = compilationUnit.getLineNumber(node.getStartPosition());
-			int endLine = startLine + compilationUnit.getLineNumber(node.getLength());
-			String location = binding.getPackage().getName();
-			Element element  = new Element(name, startLine, endLine, location, type);
-			updateFeatures(features, element);
+			Type type = createType(binding, startLine);
+			updateFeatures(features, type);
 		}		
 		return true;
 	}
@@ -75,12 +75,9 @@ public class AnnotatedNodeVisitor extends ASTVisitor {
 			IVariableBinding binding = fragment.resolveBinding();
 			Set<Feature> features = findFeatures(binding.getAnnotations());
 			if (features.size() > 0) {
-				String name = binding.getName();
-				int startLine = compilationUnit.getLineNumber(node.getStartPosition());
-				int endLine = startLine + compilationUnit.getLineNumber(node.getLength());
-				String location = binding.getDeclaringClass().getQualifiedName();
-				Element element = new Element(name, startLine, endLine, location, ElementType.ATTRIBUTE);
-				updateFeatures(features, element);
+				int startLine = compilationUnit.getLineNumber(node.getStartPosition()) + 1;
+				Field field = createField(binding, startLine);
+				updateFeatures(features, field);
 			}
 		}
 		return false;
@@ -94,12 +91,9 @@ public class AnnotatedNodeVisitor extends ASTVisitor {
 		IMethodBinding binding = node.resolveBinding();
 		Set<Feature> features = findFeatures(binding.getAnnotations());
 		if (features.size() > 0) {
-			String name = binding.getName();
-			int startLine = compilationUnit.getLineNumber(node.getStartPosition());
-			int endLine = startLine + compilationUnit.getLineNumber(node.getLength());
-			String location = binding.getDeclaringClass().getQualifiedName();
-			Element element = new Element(name, startLine, endLine, location, ElementType.METHOD);
-			updateFeatures(features, element);
+			int startLine = compilationUnit.getLineNumber(node.getStartPosition()) + 1;
+			Method method = createMethod(binding, startLine);
+			updateFeatures(features, method);
 		}
 		return false;
 	}
@@ -112,12 +106,9 @@ public class AnnotatedNodeVisitor extends ASTVisitor {
 		ITypeBinding binding = node.resolveBinding();
 		Set<Feature> features = findFeatures(binding.getAnnotations());
 		if (features.size() > 0) {
-			String name = binding.getQualifiedName();
 			int startLine = compilationUnit.getLineNumber(node.getStartPosition());
-			int endLine = startLine + compilationUnit.getLineNumber(node.getLength());
-			String location = binding.getPackage().getName();
-			Element element  = new Element(name, startLine, endLine, location, ElementType.ENUM);
-			updateFeatures(features, element);
+			Type type = createType(binding, startLine);
+			updateFeatures(features, type);
 		}		
 		return true;
 	}
@@ -127,26 +118,20 @@ public class AnnotatedNodeVisitor extends ASTVisitor {
 	 */
 	@Override
 	public boolean visit(EnumConstantDeclaration node) {
+		int startLine = compilationUnit.getLineNumber(node.getStartPosition()) + 1;
+		
 		IMethodBinding methodBinding = node.resolveConstructorBinding();
 		Set<Feature> methodFeatures = findFeatures(methodBinding.getAnnotations());
 		if (methodFeatures.size() > 0) {
-			String name = methodBinding.getName();
-			int startLine = compilationUnit.getLineNumber(node.getStartPosition());
-			int endLine = startLine + compilationUnit.getLineNumber(node.getLength());
-			String location = methodBinding.getDeclaringClass().getQualifiedName();
-			Element element = new Element(name, startLine, endLine, location, ElementType.METHOD);
-			updateFeatures(methodFeatures, element);
+			Method method = createMethod(methodBinding, startLine);
+			updateFeatures(methodFeatures, method);
 		}
 		
 		IVariableBinding variableBinding = node.resolveVariable();
 		Set<Feature> variableFeatures = findFeatures(variableBinding.getAnnotations());
 		if (variableFeatures.size() > 0) {
-			String name = variableBinding.getName();
-			int startLine = compilationUnit.getLineNumber(node.getStartPosition());
-			int endLine = startLine + compilationUnit.getLineNumber(node.getLength());
-			String location = variableBinding.getDeclaringClass().getQualifiedName();
-			Element element = new Element(name, startLine, endLine, location, ElementType.ATTRIBUTE);
-			updateFeatures(variableFeatures, element);
+			Field field = createField(variableBinding, startLine);
+			updateFeatures(variableFeatures, field);
 		}
 		return false;
 	}
@@ -187,5 +172,46 @@ public class AnnotatedNodeVisitor extends ASTVisitor {
 				versionFeatures.put(feature, elements);
 			}
 		}
+	}
+	
+	private Field createField(IVariableBinding binding, int startLine) {
+		String name = binding.getName();
+		String fieldPackage = binding.getDeclaringClass().getPackage().getName();
+		String fieldClass = binding.getDeclaringClass().getName();
+		String fieldType = binding.getType().getName();
+		boolean enumConstant = binding.isEnumConstant();
+		FeatModifier modifier = FeatModifier.getModifier(binding.getModifiers());
+		return new Field(name, fieldPackage, startLine, fieldClass, fieldType, enumConstant, modifier);
+	}
+	
+	private Method createMethod(IMethodBinding binding, int startLine) {
+		String name = binding.getName();
+		String methodPackage = binding.getDeclaringClass().getPackage().getName();
+		String methodClass = binding.getDeclaringClass().getName();
+		ITypeBinding[] parametersType = binding.getParameterTypes();
+		String[] parameters = new String[parametersType.length];
+		for (int i = 0; i < parametersType.length; i++) {
+			parameters[i] = parametersType[i].getName();
+		}
+		boolean constructor = binding.isConstructor();
+		String returnType = binding.getReturnType().getName();
+		FeatModifier modifier = FeatModifier.getModifier(binding.getModifiers());
+		return new Method(name, methodPackage, startLine, methodClass, parameters, constructor, returnType, modifier);
+	}
+	
+	private Type createType(ITypeBinding binding, int startLine) {
+		String name = binding.getName();
+		String typePackage = binding.getPackage().getName();
+		FeatType type;
+		if (binding.isInterface()) {
+			type = FeatType.INTERFACE;
+		}
+		else if (binding.isEnum()) {
+			type = FeatType.ENUM;
+		}
+		else {
+			type = FeatType.CLASS;
+		}
+		return new Type(name, typePackage, startLine, type);
 	}
 }

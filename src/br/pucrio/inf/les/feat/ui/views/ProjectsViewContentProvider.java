@@ -5,7 +5,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 
 import br.pucrio.inf.les.feat.core.domainmodel.Feature;
-import br.pucrio.inf.les.feat.core.domainmodel.ITreeNode;
+import br.pucrio.inf.les.feat.core.domainmodel.ITreeContentNode;
 import br.pucrio.inf.les.feat.core.domainmodel.Project;
 import br.pucrio.inf.les.feat.core.domainmodel.Version;
 import br.pucrio.inf.les.feate.core.repository.ProjectChangeEvent;
@@ -37,19 +37,19 @@ public class ProjectsViewContentProvider implements ITreeContentProvider,
 
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		ITreeNode node = (ITreeNode) parentElement;
+		ITreeContentNode node = (ITreeContentNode) parentElement;
 		return node.getChildrens();
 	}
 
 	@Override
 	public Object getParent(Object element) {
-		ITreeNode node = (ITreeNode) element;
+		ITreeContentNode node = (ITreeContentNode) element;
 		return node.getParent();
 	}
 
 	@Override
 	public boolean hasChildren(Object element) {
-		ITreeNode node = (ITreeNode) element;
+		ITreeContentNode node = (ITreeContentNode) element;
 		return node.hasChildren();
 	}
 

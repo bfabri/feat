@@ -4,6 +4,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.ide.IDE;
+
 /**
  * <p>
  * </p>
@@ -11,7 +15,7 @@ import java.util.Set;
  * @author Bruno Fábri
  * @version 1.0
  */
-public class Project implements ITreeNode {
+public class Project implements ITreeContentNode, IStyledLabel {
 
 	private final String name;
 	private Set<Version> versions; 
@@ -53,23 +57,31 @@ public class Project implements ITreeNode {
 	}
 	
 	@Override
-	public ITreeNode[] getChildrens() {
-		return this.getVersions();
+	public boolean hasChildren() {
+		return getVersions().length > 0;
 	}
 	
 	@Override
-	public ITreeNode getParent() {
+	public ITreeContentNode[] getChildrens() {
+		return getVersions();
+	}
+	
+	@Override
+	public ITreeContentNode getParent() {
 		return null;
 	}
 	
 	@Override
-	public String getPrintName() {
-		return String.format("Project: %1$s", this.name);
+	public Image getImage() {
+		return SHARED_IMAGES.getImage(IDE.SharedImages.IMG_OBJ_PROJECT);
 	}
 	
 	@Override
-	public boolean hasChildren() {
-		return getVersions().length > 0;
+	public StyledString getStyledLabel() {
+		StyledString styledLabel = new StyledString();
+		styledLabel.append(this.name);
+		styledLabel.append(String.format(" (%1$s) ", this.versions.size()), StyledString.COUNTER_STYLER);
+		return styledLabel;
 	}
 	
 	@Override

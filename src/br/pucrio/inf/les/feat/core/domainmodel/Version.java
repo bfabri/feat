@@ -6,6 +6,13 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.TextStyle;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.ISharedImages;
+
 /**
  * <p>
  * </p>
@@ -13,7 +20,7 @@ import java.util.Set;
  * @author Bruno Fábri
  * @version 1.0
  */
-public class Version implements ITreeNode {
+public class Version implements ITreeContentNode, IStyledLabel {
 
 	private final String version;
 	private final Date date;
@@ -60,23 +67,38 @@ public class Version implements ITreeNode {
 	}
 	
 	@Override
-	public ITreeNode[] getChildrens() {
-		return this.getFeatures();
+	public boolean hasChildren() {
+		return getFeatures().length > 0;
 	}
 	
 	@Override
-	public ITreeNode getParent() {
+	public ITreeContentNode[] getChildrens() {
+		return getFeatures();
+	}
+	
+	@Override
+	public ITreeContentNode getParent() {
 		return this.project;
 	}
 	
 	@Override
-	public String getPrintName() {
-		return String.format("Version: %1$s - %2$s", this.version, this.getFormattedDate());
+	public Image getImage() {
+		return SHARED_IMAGES.getImage(ISharedImages.IMG_OBJ_ADD);
 	}
 	
 	@Override
-	public boolean hasChildren() {
-		return getFeatures().length > 0;
+	public StyledString getStyledLabel() {
+		StyledString styledLabel = new StyledString();
+		styledLabel.append(this.version);
+		styledLabel.append(String.format(" [%1s] ", getFormattedDate()), new StyledString.Styler() {
+			
+			@Override
+			public void applyStyles(TextStyle textStyle) {
+				textStyle.foreground = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_MAGENTA);
+			}
+		});
+		styledLabel.append(String.format(" (%1s) ", this.features.size()), StyledString.COUNTER_STYLER);
+		return styledLabel;
 	}
 	
 	@Override

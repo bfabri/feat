@@ -1,65 +1,39 @@
 package br.pucrio.inf.les.feat.core.domainmodel;
 
-public class Element implements ITreeNode {
+import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.swt.graphics.Image;
 
-	private final String name;
-	private final int startLine;
-	private final int endLine;
-	private final String location;
-	private final ElementType type;
-	
-	private Feature feature;
+public abstract class Element implements ITreeContentNode, IStyledLabel {
+	protected final String name;
+	protected final String elementPackage;
+	protected final int startLine;
+	protected Feature feature;
 
-	public Element(String name, int startLine, int endLine, String location,
-			ElementType type) {
+	protected Element(String name, String elementPackage, int startLine) {
 		this.name = name;
+		this.elementPackage = elementPackage;
 		this.startLine = startLine;
-		this.endLine = endLine;
-		this.location = location;
-		this.type = type;
 	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public int getStartLine() {
-		return startLine;
-	}
-
-	public int getEndLine() {
-		return endLine;
-	}
-
-	public String getLocation() {
-		return location;
-	}
-
-	public String getType() {
-		return this.type.getDescription();
-	}
+	
+	public abstract Image getImage();
+	public abstract StyledString getStyledLabel();
 	
 	public void setFeature(Feature feature) {
 		this.feature = feature;
 	}
 	
 	@Override
-	public ITreeNode[] getChildrens() {
+	public boolean hasChildren() {
+		return false;
+	}
+	
+	@Override
+	public ITreeContentNode[] getChildrens() {
 		return null;
 	}
 	
 	@Override
-	public ITreeNode getParent() {
-		return feature;
-	}
-	
-	@Override
-	public String getPrintName() {
-		return String.format("%1$s: %2$s", getType(), getName());
-	}
-	
-	@Override
-	public boolean hasChildren() {
-		return false;
+	public ITreeContentNode getParent() {
+		return this.feature;
 	}
 }

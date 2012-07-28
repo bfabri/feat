@@ -3,6 +3,13 @@ package br.pucrio.inf.les.feat.core.domainmodel;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.TextStyle;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.ISharedImages;
+
 /**
  * <p>
  * </p>
@@ -10,7 +17,7 @@ import java.util.Set;
  * @author Bruno Fábri
  * @version 1.0
  */
-public class Feature implements ITreeNode {
+public class Feature implements ITreeContentNode, IStyledLabel {
 	
 	private final String name;
 	private final String description;
@@ -51,23 +58,38 @@ public class Feature implements ITreeNode {
 	}
 	
 	@Override
-	public ITreeNode[] getChildrens() {
+	public boolean hasChildren() {
+		return getElements().length > 0;
+	}
+	
+	@Override
+	public ITreeContentNode[] getChildrens() {
 		return getElements();
 	}
 	
 	@Override
-	public ITreeNode getParent() {
+	public ITreeContentNode getParent() {
 		return this.version;
 	}
 	
 	@Override
-	public String getPrintName() {
-		return String.format("Feature: %1$s", this.name);
+	public Image getImage() {
+		return SHARED_IMAGES.getImage(ISharedImages.IMG_OBJ_ELEMENT);
 	}
 	
 	@Override
-	public boolean hasChildren() {
-		return getElements().length > 0;
+	public StyledString getStyledLabel() {
+		StyledString styledLabel = new StyledString();
+		styledLabel.append(this.name);
+		styledLabel.append(String.format(" [%1s] ", this.description), new StyledString.Styler() {
+			
+			@Override
+			public void applyStyles(TextStyle textStyle) {
+				textStyle.foreground = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_MAGENTA);
+			}
+		});
+		styledLabel.append(String.format(" (%1s) ", this.elements.size()), StyledString.COUNTER_STYLER);
+		return styledLabel;
 	}
 	
 	@Override
