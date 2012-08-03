@@ -21,7 +21,7 @@ public class ProjectRepository {
 
 	private List<Project> projects;
 	private List<ProjectChangeListener> listeners;
-	private static ProjectRepository repository;
+	private static ProjectRepository singleton;
 	
 	private ProjectRepository() {
 		listeners = new ArrayList<ProjectChangeListener>();
@@ -29,10 +29,10 @@ public class ProjectRepository {
 	};
 	
 	public static ProjectRepository getProjectRepository() {
-		if (repository == null) {
-			repository = new ProjectRepository();
+		if (singleton == null) {
+			singleton = new ProjectRepository();
 		}
-		return repository;
+		return singleton;
 	}
 	
 	public Project[] findAll() {
@@ -86,11 +86,6 @@ public class ProjectRepository {
 		}
 	}
 	
-	public void delete(Project project) {
-		
-		//Fire event
-	}
-	
 	public void delete(Project[] projects) {
 		Set<Project> projectsRemoved = new HashSet<Project>(projects.length);
 		for (Project project : projects) {
@@ -141,8 +136,8 @@ public class ProjectRepository {
 		listeners.remove(listener);
 	}
 
-	private void fireProjectChanged(Project[] itemsAdded, Project[] itemsRemoved) {
-		ProjectChangeEvent event = new ProjectChangeEvent(this, itemsAdded, itemsRemoved);
+	private void fireProjectChanged(Project[] projectsAdded, Project[] projectsRemoved) {
+		ProjectChangeEvent event = new ProjectChangeEvent(this, projectsAdded, projectsRemoved);
 		for (ProjectChangeListener listener : listeners) {
 			listener.projectChanged(event);
 		}

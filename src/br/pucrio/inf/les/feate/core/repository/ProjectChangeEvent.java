@@ -9,10 +9,10 @@ public class ProjectChangeEvent extends EventObject {
 	private final Project[] added;
 	private final Project[] removed;
 
-	public ProjectChangeEvent(ProjectRepository source, Project[] itemsAdded, Project[] itemsRemoved) {
+	public ProjectChangeEvent(ProjectRepository source, Project[] projectsAdded, Project[] projectsRemoved) {
 		super(source);
-		added = itemsAdded;
-		removed = itemsRemoved;
+		added = projectsAdded;
+		removed = projectsRemoved;
 	}
 
 	public Project[] getItemsAdded() {

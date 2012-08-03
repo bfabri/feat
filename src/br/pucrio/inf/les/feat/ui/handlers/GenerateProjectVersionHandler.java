@@ -21,7 +21,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import br.pucrio.inf.les.feat.core.domainmodel.Project;
-import br.pucrio.inf.les.feat.core.modelgenerator.IProjectGeneratorFactory;
+import br.pucrio.inf.les.feat.core.domainmodel.Version;
+import br.pucrio.inf.les.feat.core.modelgenerator.ProjectGeneratorFactory;
 import br.pucrio.inf.les.feat.core.modelgenerator.ProjectGeneratorException;
 import br.pucrio.inf.les.feat.ui.views.ProjectsView;
 import br.pucrio.inf.les.feate.core.repository.ProjectRepository;
@@ -58,8 +59,11 @@ public class GenerateProjectVersionHandler implements IHandler {
 					Project aux = new Project(project.getName());
 					if (ProjectRepository.getProjectRepository().exists(aux)) {
 						Project project = ProjectRepository.getProjectRepository().find(aux);
-						if (project.getLastVersion().getVersion().equals(newText)) {
-							erro = "This project already contain this version, please try a different one.";
+						for (Version version : project.getVersions()) {
+							if (version.getVersion().equals(newText)) {
+								erro = "This project already contain this version, please try a different one.";
+								break;
+							}
 						}
 					}
 				}
@@ -77,7 +81,7 @@ public class GenerateProjectVersionHandler implements IHandler {
 					@Override
 					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 						try {
-							Project p = IProjectGeneratorFactory.createProjectGeneratorFor(project).generate(project, version);
+							Project p = ProjectGeneratorFactory.createProjectGeneratorFor(project).generate(project, version);
 							ProjectRepository.getProjectRepository().insert(new Project[]{p});
 						} catch (ProjectGeneratorException e) {
 							monitor.setCanceled(true);
