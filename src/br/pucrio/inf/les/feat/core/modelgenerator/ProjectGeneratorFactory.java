@@ -7,6 +7,16 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaCore;
 
+/**
+ * <p>
+ * Fábrica para criação de geradores de projetos.
+ * Implementa o padrão de projeto Factory Method.
+ * </p>
+ * 
+ * @author Bruno Fabri
+ * @version 1.0
+ *
+ */
 public class ProjectGeneratorFactory {
 
 	private static final Map<String, IProjectGeneratorStrategy> GENERATORS = new HashMap<String, IProjectGeneratorStrategy>() {
@@ -18,6 +28,15 @@ public class ProjectGeneratorFactory {
 
 	};
 
+	/**
+	 * <p>
+	 * Método responsável por criar os geradores de projetos.
+	 * </p>
+	 * 
+	 * @param project a partir desse objeto é possível verificar a natureza do projeto e criar o gerador correto.
+	 * @return gerador do projeto.
+	 * @throws ProjectGeneratorException quando a fábrica não consegue criar um gerador para um projeto de uma certa natureza.
+	 */
 	public static IProjectGeneratorStrategy createProjectGeneratorFor(IProject project) throws ProjectGeneratorException {
 		try {
 			for (Map.Entry<String, IProjectGeneratorStrategy> generator : GENERATORS

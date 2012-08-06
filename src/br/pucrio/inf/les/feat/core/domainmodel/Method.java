@@ -7,14 +7,68 @@ import org.eclipse.swt.graphics.Image;
 import br.pucrio.inf.les.feat.ui.util.LocationStyle;
 import br.pucrio.inf.les.feat.ui.util.TypeInformationStyle;
 
+/**
+ * <p>
+ * Classe filha a {@link Element} responsável por representar
+ * um elemento específico de código. Representa um método.
+ * </p>
+ * 
+ * @author Bruno Fabri
+ * @version 1.0
+ *
+ */
 public class Method extends Element {
 
+	/**
+	 * <p>
+	 * Classe do método.
+	 * </p>
+	 */
 	private String methodClass;
+	
+	/**
+	 * <p>
+	 * Parâmetros do método.
+	 * </p>
+	 */
 	private String[] parameters;
+	
+	/**
+	 * <p>
+	 * Flag que indica se o método é um método construtor.
+	 * </p>
+	 */
 	private boolean constructor;
+	
+	/**
+	 * <p>
+	 * Tipo de retorno do método.
+	 * </p>
+	 */
 	private String returnType;
+	
+	/**
+	 * <p>
+	 * Modificador de acesso do método.
+	 * </p>
+	 * @see {@link FeatModifier}
+	 */
 	private FeatModifier modifier;
 
+	/**
+	 * <p>
+	 * Construtor de um método.
+	 * </p>
+	 * 
+	 * @param name nome do método.
+	 * @param elementPackage pacote do método.
+	 * @param startLine linha de início do código do método.
+	 * @param methodClass classe do método.
+	 * @param parameters parâmetros do método.
+	 * @param constructor flag indicando se o método é construtor.
+	 * @param returnType tipo de retorno do método.
+	 * @param modifier modificador de acesso do método.
+	 */
 	public Method(String name, String elementPackage, int startLine,
 			String methodClass, String[] parameters, boolean constructor,
 			String returnType, FeatModifier modifier) {

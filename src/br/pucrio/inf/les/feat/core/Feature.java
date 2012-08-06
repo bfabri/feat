@@ -6,8 +6,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * <p>
+ * Anotação que é usada para instrumentar o código do sistema
+ * que será manipulado pelo plug-in.
+ * </p>
  * 
  * @author Bruno Fábri
+ * @version 1.0
  *
  */
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})

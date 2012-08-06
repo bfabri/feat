@@ -22,9 +22,12 @@ import br.pucrio.inf.les.feat.core.domainmodel.Project;
 import br.pucrio.inf.les.feat.core.domainmodel.Version;
 
 /**
+ * <p>
+ * Gerador específico de projetos Java.
+ * </p>
  * 
  * @author Bruno Fábri
- *
+ * @version 1.0
  */
 public class JavaProjectGeneratorStrategy implements IProjectGeneratorStrategy {
 		
@@ -62,6 +65,13 @@ public class JavaProjectGeneratorStrategy implements IProjectGeneratorStrategy {
 		return newProject;
 	}
 	
+	/**
+	 * <p>
+	 * Criar a árvore AST de um arquivo fonte do projeto java.
+	 * </p>
+	 * @param compilationUnit
+	 * @return árvore AST.
+	 */
 	private CompilationUnit parse(ICompilationUnit compilationUnit) {
 		ASTParser parser = ASTParser.newParser(AST.JLS4);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);

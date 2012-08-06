@@ -10,6 +10,9 @@ import org.eclipse.ui.ide.IDE;
 
 /**
  * <p>
+ * Classe responsável por representar um projeto.
+ * Guarda informações relevantes do projeto para serem
+ * exibidas para o usuário final do plug-in.
  * </p>
  * 
  * @author Bruno Fábri
@@ -17,22 +20,62 @@ import org.eclipse.ui.ide.IDE;
  */
 public class Project implements ITreeContentNode, IStyledLabel {
 
+	/**
+	 * <p>
+	 * Nome do projeto.
+	 * </p>
+	 */
 	private final String name;
+	
+	/**
+	 * <p>
+	 * Conjunto de versões do projeto.
+	 * </p>
+	 */
 	private Set<Version> versions; 
 	
+	/**
+	 * <p>
+	 * Construtor do projeto.
+	 * </p>
+	 * 
+	 * @param name nome do projeto a ser criado.
+	 */
 	public Project(String name) {
 		this.name = name;
 		this.versions = new HashSet<Version>();
 	}
 	
+	/**
+	 * <p>
+	 * Obtêm o nome do projeto.
+	 * </p>
+	 * 
+	 * @return nome do projeto.
+	 */
 	public String getName() {
 		return this.name;
 	}
 	
+	/**
+	 * <p>
+	 * Obtêm as versões do projeto. 
+	 * </p>
+	 * 
+	 * @return versões de um projeto.
+	 */
 	public Version[] getVersions() {
 		return this.versions.toArray(new Version[this.versions.size()]);
 	}
 	
+	/**
+	 * <p>
+	 * Obtêm a última versão do projeto.
+	 * </p>
+	 * 
+	 * @throws UnsupportedOperationException quando o projeto não possui versões.
+	 * @return última versão do projeto.
+	 */
 	public Version getLastVersion() {
 		if (this.versions.size() > 0) {
 			Iterator<Version> it = this.versions.iterator();
@@ -48,10 +91,26 @@ public class Project implements ITreeContentNode, IStyledLabel {
 		throw new UnsupportedOperationException("This project do not contain any versions yet.");
 	}
 
+	/**
+	 * <p>
+	 * Adiciona uma nova versão ao projeto.
+	 * </p>
+	 * 
+	 * @param version nova versão que será adicionada.
+	 * @return true se foi adicionada e false se não foi adicionada.
+	 */
 	public boolean addVersion(Version version) {
 		return this.versions.add(version);
 	}
 	
+	/**
+	 * <p>
+	 * Remove uma versão do projeto.
+	 * </p>
+	 * 
+	 * @param version versão que será removida.
+	 * @return true se foi removida e false se não foi removida.
+	 */
 	public boolean removeVersion(Version version) {
 		return this.versions.remove(version);
 	}
@@ -93,6 +152,13 @@ public class Project implements ITreeContentNode, IStyledLabel {
 	}
 
 	@Override
+	/**
+	 * <p>
+	 * Método responsável por informar se dois projetos
+	 * são iguais. Leva em consideração o nome do projeto
+	 * para definir a igualdade.
+	 * </p>
+	 */
 	public boolean equals(Object obj) {
 		if (obj != null) {
 			if (obj instanceof Project) {

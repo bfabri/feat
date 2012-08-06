@@ -6,9 +6,36 @@ import org.eclipse.swt.graphics.Image;
 
 import br.pucrio.inf.les.feat.ui.util.LocationStyle;
 
+/**
+ * <p>
+ * Classe filha a {@link Element} responsável por representar
+ * um elemento específico de código. Um Type pode ser uma classe,
+ * interface ou enumerado.
+ * </p>
+ * 
+ * @author Bruno Fabri
+ * @version 1.0
+ *
+ */
 public class Type extends Element {
+	/**
+	 * <p>
+	 * Representa o tipo (Classe, Interface ou Enumerado).
+	 * </p>
+	 * @see {@link FeatType}
+	 */
 	private FeatType type;
 
+	/**
+	 * <p>
+	 * Construtor de um tipo.
+	 * </p>
+	 * 
+	 * @param name nome do tipo.
+	 * @param elementPackage pacote do tipo.
+	 * @param startLine linha de início do código.
+	 * @param type tipo (Classe, Interface ou Enum).
+	 */
 	public Type(String name, String elementPackage, int startLine, FeatType type) {
 		super(name, elementPackage, startLine);
 		this.type = type;

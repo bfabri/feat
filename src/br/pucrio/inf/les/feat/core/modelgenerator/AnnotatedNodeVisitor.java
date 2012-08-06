@@ -25,23 +25,53 @@ import br.pucrio.inf.les.feat.core.domainmodel.FeatType;
 import br.pucrio.inf.les.feat.core.domainmodel.Feature;
 import br.pucrio.inf.les.feat.core.domainmodel.Field;
 import br.pucrio.inf.les.feat.core.domainmodel.Method;
+import br.pucrio.inf.les.feat.core.domainmodel.Project;
 import br.pucrio.inf.les.feat.core.domainmodel.Type;
 import br.pucrio.inf.les.feat.core.domainmodel.Version;
 
 
 /**
+ * <p>
+ * Classe responsável por visitar os nós da árvore AST
+ * gerada e extrair informações relevantes para criar
+ * o projeto no formato da classe {@link Project}.
+ * </p>
+ * <p>
+ * Implementa o padrão de projeto Visitor.
+ * </p>
  * 
  * @author Bruno Fábri
+ * @version 1.0
  *
  */
 public class AnnotatedNodeVisitor extends ASTVisitor {
+	/**
+	 * <p>
+	 * Unidade de compilação que será visitada.
+	 * </p>
+	 */
 	private final CompilationUnit compilationUnit;
+	
+	/**
+	 * <p>
+	 * Versão do projeto que será gerada.
+	 * </p>
+	 */
 	private final Version version;
+	
+	/**
+	 * <p>
+	 * Estrutura de dados que mapeia para cada feature encontrada
+	 * na unidade de compilação, os elementos que a implementam.
+	 * </p>
+	 */
 	private Map<Feature, Set<Element>> versionFeatures;
 	
 	/**
+	 * <p>
+	 * Construtor do visitor.
+	 * </p>
 	 * 
-	 * @param annotatedNodes
 	 */
 	public AnnotatedNodeVisitor(final CompilationUnit compilationUnit, final Version version, final Map<Feature, Set<Element>> versionFeatures) {
 		this.compilationUnit = compilationUnit;
@@ -50,7 +80,9 @@ public class AnnotatedNodeVisitor extends ASTVisitor {
 	}
 	
 	/**
-	 * 
+	 * <p>
+	 * Visita declarações de tipos.
+	 * </p>
 	 */
 	@Override
 	public boolean visit(TypeDeclaration node) {	
@@ -65,7 +97,9 @@ public class AnnotatedNodeVisitor extends ASTVisitor {
 	}
 	
 	/**
-	 * 
+	 * <p>
+	 * Visita declarações de campos.
+	 * </p>
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -84,7 +118,9 @@ public class AnnotatedNodeVisitor extends ASTVisitor {
 	}
 	
 	/**
-	 * 
+	 * <p>
+	 * Visita declarações de métodos.
+	 * </p>
 	 */
 	@Override
 	public boolean visit(MethodDeclaration node) {
@@ -99,7 +135,9 @@ public class AnnotatedNodeVisitor extends ASTVisitor {
 	}
 	
 	/**
-	 * 
+	 * <p>
+	 * Visita declarações de enumerados.
+	 * </p>
 	 */
 	@Override
 	public boolean visit(EnumDeclaration node) {
@@ -114,7 +152,9 @@ public class AnnotatedNodeVisitor extends ASTVisitor {
 	}
 	
 	/**
-	 * 
+	 * <p>
+	 * Visita declarações de enum constants.
+	 * </p>
 	 */
 	@Override
 	public boolean visit(EnumConstantDeclaration node) {

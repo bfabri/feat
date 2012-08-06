@@ -7,12 +7,61 @@ import org.eclipse.swt.graphics.Image;
 import br.pucrio.inf.les.feat.ui.util.LocationStyle;
 import br.pucrio.inf.les.feat.ui.util.TypeInformationStyle;
 
+/**
+ * <p>
+ * Classe filha a {@link Element} responsável por representar
+ * um elemento específico de código. Um Field pode ser por exemplo
+ * um atributo.
+ * </p>
+ * 
+ * @author Bruno Fabri
+ * @version 1.0
+ *
+ */
 public class Field extends Element {
+	/**
+	 * <p>
+	 * Classe onde está presente.
+	 * </p>
+	 */
 	private String fieldClass;
+	
+	/**
+	 * <p>
+	 * Tipo do campo.
+	 * </p>
+	 */
 	private String fieldType;
+	
+	/**
+	 * <p>
+	 * Flag que indica se o campo é um enum constant.
+	 * </p>
+	 */
 	private boolean enumConstant;
+	
+	/**
+	 * <p>
+	 * Modificador de acesso do campo.
+	 * </p>
+	 * 
+	 * @see {@link FeatModifier}
+	 */
 	private FeatModifier modifier;
 
+	/**
+	 * <p>
+	 * Construtor de um Field.
+	 * </p>
+	 * 
+	 * @param name nome do campo.
+	 * @param elementPackage pacote do campo.
+	 * @param startLine linha de início do código.
+	 * @param fieldClass classe do campo.
+	 * @param fieldType tipo do campo.
+	 * @param enumConstant flag que verifica se o campo é um enum constant.
+	 * @param modifier modificador de acesso do campo.
+	 */
 	public Field(String name, String elementPackage, int startLine,
 			String fieldClass, String fieldType, boolean enumConstant,
 			FeatModifier modifier) {
